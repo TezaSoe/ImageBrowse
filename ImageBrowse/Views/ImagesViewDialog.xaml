@@ -1,0 +1,390 @@
+﻿<Window x:Class="ImageBrowse.Views.ImagesViewDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:photos="clr-namespace:ImageBrowse.PhotoCollection"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        mc:Ignorable="d"
+        x:Name="_ImagesViewDialog"
+        Title="Images Thumbnail View"
+        WindowStartupLocation="CenterOwner"
+        Loaded="WindowPopup_Loaded"
+        MouseDown="_ImagesViewDialog_MouseDown"
+        Height="507" Width="829">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="Photos" ObjectType="{x:Type photos:PhotoCollection}" />
+
+        <!-- Photo Template -->
+        <DataTemplate x:Key="pdf">
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Center" Margin="6">
+                <!-- Drop Shadow -->
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="4" Background="#44000000">
+                    <Border.RenderTransform>
+                        <TranslateTransform X="5" Y="5" />
+                    </Border.RenderTransform>
+                    <Border.BitmapEffect>
+                        <BlurBitmapEffect Radius="8" />
+                    </Border.BitmapEffect>
+                </Border>
+                <!-- Image Template -->
+                <Border Padding="4" Background="White" BorderBrush="#22000000" BorderThickness="1">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="Images/pdf1.png" 
+                               Height="{Binding ElementName=ZoomSlider, Path='Value'}" 
+                               ToolTip="{Binding FileName}" />
+                        <TextBlock TextWrapping="Wrap" Text="{Binding FileName}" Foreground="Black"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="notpdf">
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Center" Margin="6">
+                <!-- Drop Shadow -->
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="4" Background="#44000000">
+                    <Border.RenderTransform>
+                        <TranslateTransform X="5" Y="5" />
+                    </Border.RenderTransform>
+                    <Border.BitmapEffect>
+                        <BlurBitmapEffect Radius="8" />
+                    </Border.BitmapEffect>
+                </Border>
+                <!-- Image Template -->
+                <Border Padding="4" Background="White" BorderBrush="#22000000" BorderThickness="1">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding Thumbnail}" 
+                               Height="{Binding ElementName=ZoomSlider, Path='Value'}" 
+                               ToolTip="{Binding FileName}" />
+                        <TextBlock TextWrapping="Wrap" Text="{Binding FileName}" Foreground="Black"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Main photo catalog view -->
+        <Style TargetType="{x:Type ListBox}" x:Key="PhotoListBoxStyle">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <WrapPanel Margin="5" IsItemsHost="True" Orientation="Horizontal"
+                                   ItemHeight="Auto"
+                                   ItemWidth="{Binding ElementName=ZoomSlider, Path='Value'}"
+                                   VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for an individual generic item -->
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border SnapsToDevicePixels="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#445B6249" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Removes dotted rectangle focus -->
+        <Style TargetType="{x:Type ItemsControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <WrapPanel IsItemsHost="True" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- For metadata properties pane -->
+        <Style x:Key="default" TargetType="{x:Type GroupBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid>
+                            <Border Background="#AAFFFFFF" CornerRadius="4" BorderBrush="#66000000" BorderThickness="1">
+                                <Border CornerRadius="4" BorderBrush="#88FFFFFF" BorderThickness="1"
+                                        ClipToBounds="true">
+                                    <Border CornerRadius="6" BorderThickness="2" BorderBrush="#ABB497">
+                                        <Border.BitmapEffect>
+                                            <BlurBitmapEffect Radius="6" />
+                                        </Border.BitmapEffect>
+                                        <Border CornerRadius="6" BorderThickness="2" BorderBrush="#DEF2AD">
+                                            <Border.BitmapEffect>
+                                                <BlurBitmapEffect Radius="6" />
+                                            </Border.BitmapEffect>
+                                        </Border>
+                                    </Border>
+                                </Border>
+                            </Border>
+                            <ContentPresenter Margin="6" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- For metadata properties pane -->
+        <Style x:Key="change" TargetType="{x:Type GroupBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid>
+                            <Border Background="LightGray" CornerRadius="4" BorderBrush="#66000000" BorderThickness="1">
+                                <Border CornerRadius="4" BorderBrush="#88FFFFFF" BorderThickness="1"
+                                        ClipToBounds="true">
+                                    <Border CornerRadius="6" BorderThickness="2" BorderBrush="#ABB497">
+                                        <Border.BitmapEffect>
+                                            <BlurBitmapEffect Radius="6" />
+                                        </Border.BitmapEffect>
+                                        <Border CornerRadius="6" BorderThickness="2" BorderBrush="#DEF2AD">
+                                            <Border.BitmapEffect>
+                                                <BlurBitmapEffect Radius="6" />
+                                            </Border.BitmapEffect>
+                                        </Border>
+                                    </Border>
+                                </Border>
+                            </Border>
+                            <ContentPresenter Margin="6" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Default label style -->
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
+        <!-- Headers for metadata properties -->
+        <Style x:Key="MetadataHeader" TargetType="{x:Type Label}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.5" Color="{x:Static SystemColors.AppWorkspaceColor}" />
+                            <GradientStop Offset="2" Color="Transparent" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <!-- Default ContextMenu style -->
+        <Style TargetType="{x:Type ContextMenu}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <Border x:Name="Border" Background="White" BorderBrush="Gray" BorderThickness="1">
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow" Value="true">
+                                <Setter TargetName="Border" Property="CornerRadius" Value="4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="NavigationCommands.Refresh"
+                        Executed="RefreshExecuted"
+                        CanExecute="RefreshCanExecute"/>
+        <CommandBinding Command="ApplicationCommands.Paste"
+                        Executed="PasteExecuted"
+                        CanExecute="PasteCanExecute" />
+        <CommandBinding Command="ApplicationCommands.Delete"
+                        Executed="DeleteExecuted"
+                        CanExecute="DeleteCanExecute"/>
+        <!--<CommandBinding Command="ApplicationCommands.Cut"
+                        Executed="ShiftDeleteExecuted"
+                        CanExecute="ShiftDeleteCanExecute"/>-->
+    </Window.CommandBindings>
+    <Grid>
+        <Grid DataContext="{Binding Source={StaticResource Photos}}" Margin="7.5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" MinHeight="47" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Photo Management Canvas -->
+            <Grid Grid.Column="0" Grid.Row="0" Margin="0,5,0,0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.6*" />
+                    <ColumnDefinition Width="7.4*" />
+                </Grid.ColumnDefinitions>
+                <!--Zoom Control-->
+                <Viewbox Grid.Column="0" Height="36" Stretch="Uniform" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,6,0,6" Width="600">
+                    <TextBlock x:Name="status" Grid.Column="1" Text="You can view your image from folder。&#10;You can do drag and drop, copy / paste and delete. You can add more file using browse button." FontSize="20" Height="55" Width="900" HorizontalAlignment="Left"/>
+                    <!--<Label Content="説明:" VerticalAlignment="Center" FontSize="15" />-->
+                </Viewbox>
+
+            </Grid>
+
+            <GroupBox x:Name="PhotosGroupBox"
+                Grid.Column="0" Grid.Row="1" 
+                AllowDrop="True"
+                Drop="DropBox_Drop"
+                DragOver="DropBox_DragOver"
+                DragLeave="DropBox_DragLeave">
+                <GroupBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="GroupBoxRefreshMenu" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" Command="NavigationCommands.Refresh">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Refresh" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator x:Name="GroupBoxSeparator" Height="3"/>
+                        <MenuItem x:Name="GroupBoxPasteMenu" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" Command="ApplicationCommands.Paste">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="GroupBoxDeleteMenu" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" Command="ApplicationCommands.Delete">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Delete" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </GroupBox.ContextMenu>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ListBox
+                        IsSynchronizedWithCurrentItem="True"
+                        Name="PhotosListBox"
+                        Style="{StaticResource PhotoListBoxStyle}"
+                        Margin="5"
+                        SelectionMode="Extended"
+                        ItemsSource="{Binding}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="ListBoxRefreshMenu" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" Command="NavigationCommands.Refresh">
+                                    <MenuItem.Icon>
+                                        <materialDesign:PackIcon Kind="Refresh" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <!--<Separator x:Name="ListBoxSeparator" />-->
+                                <MenuItem x:Name="ListBoxDeleteMenu" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" Command="ApplicationCommands.Delete">
+                                    <MenuItem.Icon>
+                                        <materialDesign:PackIcon Kind="Delete" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type photos:Photo}">
+                                <ContentControl Content="{Binding}" IsTabStop="False">
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPdf}" Value="true">
+                                                    <Setter Property="ContentTemplate" Value="{StaticResource pdf}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsPdf}" Value="false">
+                                                    <Setter Property="ContentTemplate" Value="{StaticResource notpdf}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </GroupBox>
+
+            <!-- Photo Management Canvas -->
+            <Grid Grid.Column="0" Grid.Row="1" Height="50" VerticalAlignment="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <!--Zoom Control-->
+                <Viewbox Grid.Column="0" Height="30" Stretch="Uniform">
+                    <ToggleButton
+                        Name="toggleWithPopup" 
+                        Height="30" Width="30"
+                        Style="{StaticResource MaterialDesignActionToggleButton}">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon Kind="MagnifyPlusOutline" Height="30" Width="30" Margin="-15" Foreground="Black" Background="White"/>
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon Kind="MagnifyPlus" Height="30" Width="30" Margin="-15" Foreground="Black" Background="White"/>
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+                </Viewbox>
+                <Slider
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Name="ZoomSlider"
+                    Orientation="Horizontal"
+                    Minimum="80"
+                    Maximum="320"
+                    Value="100"
+                    TickFrequency="80"
+                    TickPlacement="BottomRight"
+                    SmallChange="5"
+                    LargeChange="20" />
+                <!--<Popup
+                    Name="pUp"
+                    Grid.Column="1"
+
+                    VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                    IsOpen="{Binding ElementName=toggleWithPopup,Path=IsChecked}" 
+                    PlacementTarget="{Binding ElementName=toggleWithPopup}"
+                    AllowsTransparency="True">
+                </Popup>-->
+            </Grid>
+
+            <Grid Grid.Column="0" Grid.Row="2" Margin="0,5,0,0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5.6*" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="1.5*" />
+                </Grid.ColumnDefinitions>
+                <!-- ファイル数 status-->
+                <Viewbox Grid.Column="0" HorizontalAlignment="Left" Height="30" Stretch="Uniform">
+                    <StackPanel Orientation="Horizontal">
+                        <!--<Label>ファイル件数 :</Label>-->
+                        <Label x:Name="FilesCount" Width="600"/>
+                    </StackPanel>
+                </Viewbox>
+                <Viewbox Grid.Column="1" HorizontalAlignment="Center" Height="33" Stretch="Uniform">
+                    <Button Content="Browse" VerticalAlignment="Center" Height="33" Width="150" FontSize="15" Click="BrowseButton_Click" />
+                </Viewbox>
+                <Viewbox Grid.Column="3" HorizontalAlignment="Center" Height="33" Stretch="Uniform">
+                    <Button Content="Close" VerticalAlignment="Center" Height="33" Width="150" FontSize="15" Click="CloseButton_Click" />
+                </Viewbox>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
