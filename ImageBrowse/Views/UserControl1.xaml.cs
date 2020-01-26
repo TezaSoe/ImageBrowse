@@ -5,7 +5,7 @@ using System.Windows.Controls;
 namespace ImageBrowse.Views
 {
     /// <summary>
-    /// UserControl1.xaml の相互作用ロジック
+    /// Interaction logic for UserControl1.xaml
     /// </summary>
     public partial class UserControl1 : UserControl
     {

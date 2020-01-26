@@ -243,7 +243,7 @@
                 <!--Zoom Control-->
                 <Viewbox Grid.Column="0" Height="36" Stretch="Uniform" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,6,0,6" Width="600">
                     <TextBlock x:Name="status" Grid.Column="1" Text="You can view your image from folder。&#10;You can do drag and drop, copy / paste and delete. You can add more file using browse button." FontSize="20" Height="55" Width="900" HorizontalAlignment="Left"/>
-                    <!--<Label Content="説明:" VerticalAlignment="Center" FontSize="15" />-->
+                    <!--<Label Content="Explanation:" VerticalAlignment="Center" FontSize="15" />-->
                 </Viewbox>
 
             </Grid>
@@ -371,10 +371,10 @@
                     <ColumnDefinition Width="0.2*" />
                     <ColumnDefinition Width="1.5*" />
                 </Grid.ColumnDefinitions>
-                <!-- ファイル数 status-->
+                <!-- files count status-->
                 <Viewbox Grid.Column="0" HorizontalAlignment="Left" Height="30" Stretch="Uniform">
                     <StackPanel Orientation="Horizontal">
-                        <!--<Label>ファイル件数 :</Label>-->
+                        <!--<Label>Files Count :</Label>-->
                         <Label x:Name="FilesCount" Width="600"/>
                     </StackPanel>
                 </Viewbox>

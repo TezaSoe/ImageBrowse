@@ -30,7 +30,6 @@ C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\bin\Debug\Microsoft.WindowsAP
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\bin\Debug\Prism.xml
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\bin\Debug\Prism.Unity.Wpf.xml
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\bin\Debug\Prism.Wpf.xml
-C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\obj\Debug\ImageBrowse.csprojResolveAssemblyReference.cache
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\obj\Debug\App.baml
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\obj\Debug\Views\ImagesViewDialog.g.cs
 C:\Users\user\Source\Repos\ImageBrowse\ImageBrowse\obj\Debug\Views\MainWindow.g.cs

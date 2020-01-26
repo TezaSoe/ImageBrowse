@@ -19,28 +19,11 @@ namespace ImageBrowse
 
         public void Initialize()
         {
-            //DatabaseContextのDI
-            //_container.RegisterType<DbContext, DbContext>(new ContainerControlledLifetimeManager());
-
-            //PropetyDI
-            //_container.RegisterType<ISaveService, SaveService>("ByAll");
-
-            //ServicesのDI
-            //_container.RegisterType<IService, Service>();
-
-            //RepositoriesのDI
-            //_container.RegisterType<IVerifyFormRepository, VerifyFormRepository>();
-
-            //Viewの遷移先のDI
-            //_container.RegisterTypeForNavigation<MainWindow>();
+            //View transition destination DI
             _container.RegisterTypeForNavigation<UserControl1>();
 
-            //ViewのDI
-            //_container.RegisterType<object, MainWindow>(nameof(MainWindow));
+            //View DI
             _container.RegisterType<object, UserControl1>(nameof(UserControl1));
-
-            //_container.RegisterInstance(typeof(ApplicationCommands), new ApplicationCommands());
-            //_container.RegisterSingleton<ApplicationCommands>();
 
             _regionManager.RequestNavigate("MainRegion", nameof(UserControl1));
         }

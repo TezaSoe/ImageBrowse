@@ -25,7 +25,7 @@ namespace ImageBrowse.ViewModels
         }
 
         /// <summary>
-        /// Image Folder Path追加イベント
+        /// Image Folder Path Add Event
         /// </summary>
         /// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
         private DelegateCommand _ImageFolderSelectCommand;
@@ -36,16 +36,16 @@ namespace ImageBrowse.ViewModels
         {
             try
             {
-                // ダイアログのインスタンスを生成
-                var dialog = new CommonOpenFileDialog("フォルダーの選択");
+                // Create dialog instance
+                var dialog = new CommonOpenFileDialog("Select folder");
 
                 if (!string.IsNullOrEmpty(FolderPath))
                     dialog.InitialDirectory = FolderPath;
 
-                // 選択形式をフォルダースタイルにする IsFolderPicker プロパティを設定
+                // Set the IsFolderPicker into folder style property to make the selection format
                 dialog.IsFolderPicker = true;
 
-                // ダイアログを表示
+                // Show dialog
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     FolderPath = dialog.FileName;

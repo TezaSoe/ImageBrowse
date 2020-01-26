@@ -1,5 +1,4 @@
-﻿using ImageBrowse;
-using ImageBrowse.Views;
+﻿using ImageBrowse.Views;
 using Microsoft.Practices.Unity;
 using Prism.Modularity;
 using Prism.Unity;

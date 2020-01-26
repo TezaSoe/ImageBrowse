@@ -6,13 +6,13 @@ using System.Windows.Threading;
 namespace ImageBrowse
 {
     /// <summary>
-    /// App.xaml の相互作用ロジック
+    /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
         /// <summary>
-        /// アプリケーション開始時のイベントハンドラprotected override void OnStartup(StartupEventArgs e)
-        /// (App.xamlで定義)
+        /// Application start event handler
+        /// protected override void OnStartup(StartupEventArgs e)
         /// </summary>
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -24,7 +24,8 @@ namespace ImageBrowse
         }
 
         /// <summary>
-        /// アプリケーション終了時のイベントハンドラprotected override void OnExit(ExitEventArgs e)
+        /// Application end event handler
+        /// protected override void OnExit(ExitEventArgs e)
         /// </summary>
         private void Application_Exit(object sender, ExitEventArgs e)
         {
@@ -33,7 +34,7 @@ namespace ImageBrowse
         }
 
         /// <summary>
-        /// WPF UIスレッドでの未処理例外スロー時のイベントハンドラ
+        /// Event handler when throwing unhandled exception in WPF UI thread
         /// </summary>
         private void Application_DispatcherUnhandledException(
             object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -43,7 +44,7 @@ namespace ImageBrowse
         }
 
         /// <summary>
-        /// UIスレッド以外の未処理例外スロー時のイベントハンドラ
+        /// Event handler for throwing unhandled exceptions other than UI thread
         /// </summary>
         private void CurrentDomain_UnhandledException(
             object sender, UnhandledExceptionEventArgs e)
@@ -52,7 +53,7 @@ namespace ImageBrowse
         }
 
         /// <summary>
-        /// 未処理例外をイベントログに出力します。
+        /// Output unhandled exception to event log.
         /// </summary>
         private void ReportUnhandledException(Exception ex)
         {
@@ -60,8 +61,8 @@ namespace ImageBrowse
             string logNowDate = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string appendText = $"{nowDate}:{ex.ToString()}{Environment.NewLine}";
             File.AppendAllText($@"{logNowDate}_errorlog.txt", appendText);
-            MessageBox.Show($@"エラーが発生したため終了します。{Environment.NewLine}" +
-                $@"エラーログは{Environment.NewLine}{Directory.GetCurrentDirectory()}\{logNowDate}_errorlog.txt{Environment.NewLine}に出力しています。");
+            MessageBox.Show($@"Exit due to error。{Environment.NewLine}" +
+                $@"The error log is output to {Environment.NewLine}{Directory.GetCurrentDirectory()}\{logNowDate}_errorlog.txt{Environment.NewLine}");
             Shutdown();
         }
     }

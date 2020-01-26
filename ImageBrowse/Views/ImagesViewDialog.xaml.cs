@@ -5,17 +5,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Interop;
 
 namespace ImageBrowse.Views
 {
     /// <summary>
-    /// Setting.xaml の相互作用ロジック
+    /// Interaction logic for Setting.xaml
     /// </summary>
     public partial class ImagesViewDialog : Window
     {
@@ -323,15 +321,13 @@ namespace ImageBrowse.Views
                 }
                 bool IsError = false;
                 List<string> errFilesList = new List<string>();
-                //errFilesList.Add("下記のファイルがコピー先フォルダーにコピーされない状況です。");
-                errFilesList.Add("ファイル選択時に、以下のエラーが発生しました。");
+                errFilesList.Add("The following error occurred when selecting a file.");
                 errFilesList.Add("");
                 if (duplicateFiles.Count > 0)
                 {
                     IsError = true;
-                    //errFilesList.Add("重複ファイルリスト");
-                    errFilesList.Add("** 同一ファイル名エラー **");
-                    errFilesList.Add("［選択するファイル名は一意にしてください。］");
+                    errFilesList.Add("** Same file name error **");
+                    errFilesList.Add("[Select a unique file name. ]");
                     foreach (string filename in duplicateFiles)
                     {
                         errFilesList.Add(filename);
@@ -341,9 +337,8 @@ namespace ImageBrowse.Views
                 if (missFileTypes.Count > 0)
                 {
                     IsError = true;
-                    //errFilesList.Add("ファイルタイプエラーリスト");
-                    errFilesList.Add("** ファイルタイプエラー **");
-                    errFilesList.Add("［選択したファイルの拡張子は対応していません。］");
+                    errFilesList.Add("** File type error **");
+                    errFilesList.Add("[The extension of the selected file is not supported. ]");
                     foreach (string filename in missFileTypes)
                     {
                         errFilesList.Add(filename);
@@ -353,9 +348,8 @@ namespace ImageBrowse.Views
                 if (missSource.Count > 0)
                 {
                     IsError = true;
-                    //errFilesList.Add("ソースディレクトリが見つからないリスト");
-                    errFilesList.Add("** コピー元不明エラー **");
-                    errFilesList.Add("［選択したファイルが存在するか確認してください。］");
+                    errFilesList.Add("** Copy source unknown error **");
+                    errFilesList.Add("[Check that the selected file exists. ]");
                     foreach (string filename in missSource)
                     {
                         errFilesList.Add(filename);
@@ -477,18 +471,7 @@ namespace ImageBrowse.Views
             try
             {
                 Photos.Path = SelectedFolderPath;
-                FilesCount.Content = Photos.Count + " 個の項目";
-
-                //if (Photos.Count > 0)
-                //{
-                //    photoCount = Photos.Count;
-                //    FilesCount.Content = "【 " + photoCount + " 】ファイルを見つかりました。";
-                //}
-                //else
-                //{
-                //    photoCount = 0;
-                //    FilesCount.Content = "該当ファイルが見つかりませんでした。";
-                //}
+                FilesCount.Content = Photos.Count + " item(s).";
             }
             catch (Exception ex)
             {
@@ -513,8 +496,8 @@ namespace ImageBrowse.Views
         {
             try
             {
-                // ダイアログのインスタンスを生成
-                var dialog = new CommonOpenFileDialog("画像ファイルの選択");
+                // Create dialog instance
+                var dialog = new CommonOpenFileDialog("Select image file");
                 //dialog.InitialDirectory = SelectedFolderPath;
                 dialog.Multiselect = true;
 
@@ -524,7 +507,7 @@ namespace ImageBrowse.Views
                 dialog.Filters.Add(new CommonFileDialogFilter("Tagged Image Files", "*.TIF;*.TIFF"));// Tagged Image File Format
                 dialog.Filters.Add(new CommonFileDialogFilter("PDF Files", "*.PDF"));// Portable Document Format
 
-                // ダイアログを表示
+                // Show dialog
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     string[] files = dialog.FileNames.ToArray();
